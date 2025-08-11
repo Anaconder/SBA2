@@ -78,9 +78,14 @@ Obtain the assigment Id from the studentubmission and match with the assigment I
 # Review
 
 ### What could you have done differently during the planning stages of your project to make the execution easier?
+cross checked that I had uploaded the code early when my gut told me to.Also maybe making the list items easier and then grouping up the related ones. also have some sort of checklist.
 
 ### Were there any requirements that were difficult to implement? What do you think would make them easier to implement in future projects?
+the last part was difficult to inplement.maybe a lab on something similar would have beeb nice
 
 ### What would you add to, or change about your application if given more time?
+would have loved to have my average helper function to calculate the average
 
 ### Use this space to make notes for your future self about anything that you think is important to remember about this process, or that may aid you when attempting something similar again?
+
+don't stick to one type of solution every code/ function is replaceable
