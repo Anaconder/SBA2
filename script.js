@@ -76,26 +76,102 @@ const LearnerSubmissions = [
   }
 ];
 
+
+// Function Declarations
+
+
+
+
+
 function getLearnerData(course, ag, submissions) {
   // here, we would process this data to achieve the desired result.
-  const result = [
-    {
-      id: 125,
-      avg: 0.985, // (47 + 150) / (50 + 150)
-      1: 0.94, // 47 / 50
-      2: 1.0 // 150 / 150
-    },
-    {
-      id: 132,
-      avg: 0.82, // (39 + 125) / (50 + 150)
-      1: 0.78, // 39 / 50
-      2: 0.833 // late: (140 - 15) / 150
+  function validateData(course, ag) {
+    try{//checks if the course id exists (matches what is in the database)
+      if (course.id !== CourseInfo.id) {
+        throw `This course "${course.name}" does not exist`;
+      
+      }else if ((AssignmentGroup.course_id !== course.id) || AssignmentGroup.assignments.some(assignment => assignment.id !== ag.id)) {
+        throw `Assignment does not exist for ${course.name}`;// checks if such an assignment exists for that course Id
+      };
+    }catch(err) {
+      console.log(err);
     }
-  ];
+    
+    try {
+      submissions.forEach(sub => { // checks if the score is a number
+        if (typeof sub.submission.score !== "number" || sub.submission.score <= 0) {
+          throw `Invalid score for assignment ${course.name}`;
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
 
+
+  }
+
+  function isdue (){
+    const current_date = new Date("2025-08-07");
+    const dueAssignments = ag.assignments.filter(a => new Date(a.due_at) <= current_date);
+    
+    submissions.forEach(due => {
+    const assignment = dueAssignments.find(a => a.id === due.assignment_id);
+    if (assignment=== undefined) {
+      return; 
+    }
+    });
+  }
+
+  function LateDeduction(){
+     let score = submission.submission.score;
+    if (new Date(sub.submission.submitted_at) > new Date(ag.due_at)) {
+      score -= (ag.points_possible * 0.1);
+    }
+  }
+
+  function average(){
+    let total=0;
+    let grade=0
+    
+    submissions.forEach(sub => { // checks if the score is a number
+        total += ag.assignment.points_possible
+        grade += sub.submission.score
+    });
+
+    percentage = (grade/total)*100
+    return;
+  }
+
+    
+
+
+
+
+
+  
+  
+  
+  }
+
+
+  
+  
+  
+  
+  
+  
+  
+  
   return result;
 }
 
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
 console.log(result);
+
+
+
+
+
+
+// buildLearnerObject()
