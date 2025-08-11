@@ -123,39 +123,39 @@ function getLearnerData(course, ag, submissions) {
   }
 
   function LateDeduction(assignment,submissions){ 
+    let score = submissions.submission.score;
     if (new Date(submissions.submission.submitted_at) > new Date(assignment.due_at)) {
-      submissions.submission.score -= (assignment.points_possible * 0.1);
+      score -= assignment.points_possible * 0.1; // deduct 10%
     }
-    return submissions.submission.score;
+    return score
   }
 
-  function average(assignment,sub){
-    let total=0;
-    let grade=0
-    
-    grade += sub.submission.score
-    total += assignment.points_possible
-
-    percentage = (grade/total)*100;
-    return percentage;
-  }
-
-
-
-    function object_aggregator(dueAssignments, submissions) {
-    const student = {};
+ 
+  function object_aggregator(dueAssignments, submissions) {
+  const student = {};
 
     submissions.forEach(sub => {
       const assignment = dueAssignments.find(asg => asg.id === sub.assignment_id);
       if (!assignment) return; // skip if not due
 
-      LateDeduction(assignment, sub);
-      average(assignment,sub)
+      if (!student[sub.learner_id]) {
+        student[sub.learner_id] = {
+          id: sub.learner_id,
+          totalEarned: 0,
+          totalPossible: 0
+        };
+      }
+
+      const scoreAdjusted=LateDeduction(assignment, sub);
+      
+      student[sub.learner_id][assignment.id] = (scoreAdjusted / assignment.points_possible) * 100;
+      student[sub.learner_id].totalEarned += scoreAdjusted;
+      student[sub.learner_id].totalPossible += assignment.points_possible;
     });
 
     return Object.values(student).map(stu => ({
       id: stu.id,
-      avg: percentage,
+      avg: (stu.totalEarned / stu.totalPossible) * 100,
       ...Object.fromEntries(Object.entries(stu).filter(([k]) => !["id", "totalEarned", "totalPossible"].includes(k)))
     }));
   }
