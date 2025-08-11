@@ -8,12 +8,11 @@
 
 - An error should be thrown if an assignment group doesn't belong to it's course,the course id should match.(need more clarification)[probably means that if it is not in the assigments attribute of the assignment group object]
 
-- Use try /catch to prevent invalid inputs 
+- Use try /catch to prevent invalid inputs
 
 - Assignments that aren't due should not be part of the average.late submission should attract a 10% submission penalty.
 
-- Create a function named getLearnerData() that accepts these values as parameters, in the order listed: (CourseInfo, AssignmentGroup, [LearnerSubmission]), and returns the formatted result, which should be an array of objects as described above
-
+- Create a function named getLearnerData() that accepts these values as parameters, in the order listed: (CourseInfo, AssignmentGroup, [studentubmission]), and returns the formatted result, which should be an array of objects as described above
 
 ## Grading Requirements /Minimum Viable product
 
@@ -41,56 +40,46 @@
 
 - Include a README file that contains a description of your application.
 
-
-# What I have 
+# What I have
 
 - A course info object that contains an id & name
 
-- An assignment group objectwhich contains id,name, course _id: number,group weight,assignments
+- An assignment group objectwhich contains id,name, course \_id: number,group weight,assignments
 
-- An assignmentinfo object that contains id, name,due_at and points_ possible
+- An assignmentinfo object that contains id, name,due*at and points* possible
 
 - An object of learner submisions ehich contains learner id,assignment_id, submission objeect with attributes score,submitted at.
 
 - The Output should look like this
-     const result = [
-    {
-      id: 125,
-      avg: 0.985, // (47 + 150) / (50 + 150)
-      1: 0.94, // 47 / 50
-      2: 1.0 // 150 / 150
-    },
-    {
-      id: 132,
-      avg: 0.82, // (39 + 125) / (50 + 150)
-      1: 0.78, // 39 / 50
-      2: 0.833 // late: (140 - 15) / 150
-    }
+  const result = [
+  {
+  id: 125,
+  avg: 0.985, // (47 + 150) / (50 + 150)
+  1: 0.94, // 47 / 50
+  2: 1.0 // 150 / 150
+  },
+  {
+  id: 132,
+  avg: 0.82, // (39 + 125) / (50 + 150)
+  1: 0.78, // 39 / 50
+  2: 0.833 // late: (140 - 15) / 150
+  }
   ];
 
 ## Step by Step
 
 from course sunbmisssions extract the id
-obtain the score from submissions 
+obtain the score from submissions
 obtain the score possible
-calculate the average i.e the % of scores divided points_possible * 100
+calculate the average i.e the % of scores divided points_possible \* 100
 Check the submission dates and use it to determine what qualifies to be included on the average calculation
-Obtain the assigment Id from the LearnerSubmission and match with the assigment Id in AssignmnetGroup
-
-
-
-
-
-
+Obtain the assigment Id from the studentubmission and match with the assigment Id in AssignmnetGroup
 
 # Review
 
 ### What could you have done differently during the planning stages of your project to make the execution easier?
 
-
-
 ### Were there any requirements that were difficult to implement? What do you think would make them easier to implement in future projects?
-
 
 ### What would you add to, or change about your application if given more time?
 

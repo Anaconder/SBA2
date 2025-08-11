@@ -33,7 +33,7 @@ const AssignmentGroup = {
 };
 
 // The provided learner submission data.
-const LearnerSubmissions = [
+const studentubmissions = [
   {
     learner_id: 125,
     assignment_id: 1,
@@ -126,6 +126,7 @@ function getLearnerData(course, ag, submissions) {
     if (new Date(submissions.submission.submitted_at) > new Date(assignment.due_at)) {
       submissions.submission.score -= (assignment.points_possible * 0.1);
     }
+    return submissions.submission.score;
   }
 
   function average(assignment,sub){
@@ -139,25 +140,25 @@ function getLearnerData(course, ag, submissions) {
     return percentage;
   }
 
-  function object_aggregator(ag,submissions){
-    student={}
-    let assignment = isdue(ag)
 
-    submissions.forEach(sub =>{
-      const studentId = sub.learner_id;
-      if (!assignment) return;
-      LateDeduction(assignment,sub)
+
+    function object_aggregator(dueAssignments, submissions) {
+    const student = {};
+
+    submissions.forEach(sub => {
+      const assignment = dueAssignments.find(asg => asg.id === sub.assignment_id);
+      if (!assignment) return; // skip if not due
+
+      LateDeduction(assignment, sub);
       average(assignment,sub)
-    })
-
-    return Object.values(student).map(stu => {
-    stu.avg = percentage;
-    id: learner.id;
-    avg: Number(avg.toFixed(3));
-    return stu;
     });
 
-  } 
+    return Object.values(student).map(stu => ({
+      id: stu.id,
+      avg: percentage,
+      ...Object.fromEntries(Object.entries(stu).filter(([k]) => !["id", "totalEarned", "totalPossible"].includes(k)))
+    }));
+  }
 
   
   // MAINCODE
@@ -167,20 +168,17 @@ function getLearnerData(course, ag, submissions) {
     console.error(err.message);
     return; // Stop if invalid
   }
-
-  object_aggregator(ag,submissions)
+  
+  const dueAssignments = isdue(ag);
+  return object_aggregator(dueAssignments, submissions);
   
   
 }
 
-const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+const result = getLearnerData(CourseInfo, AssignmentGroup, studentubmissions);
 
 console.log(result);
 
 
 
-
-
-
-// buildLearnerObject()
 
