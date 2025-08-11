@@ -87,10 +87,7 @@ function getLearnerData(course, ag, submissions) {
   // here, we would process this data to achieve the desired result.
   function validateData(course, ag) {
     try{//checks if the course id exists (matches what is in the database)
-      if (course.id !== CourseInfo.id) {
-        throw `This course "${course.name}" does not exist`;
-      
-      }else if ((AssignmentGroup.course_id !== course.id) || AssignmentGroup.assignments.some(assignment => assignment.id !== ag.id)) {
+      if (ag.course_id !== course.id){
         throw `Assignment does not exist for ${course.name}`;// checks if such an assignment exists for that course Id
       };
     }catch(err) {
@@ -107,62 +104,73 @@ function getLearnerData(course, ag, submissions) {
       console.log(err);
     }
 
+    try {
+      ag.assignments.forEach(point => { // checks if the score is a number
+        if (typeof point.points_possible !== "number" || point.points_possible <= 0) {
+          throw `Invalid points total for assignment ${ag.id} in ${ag.name}`;
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
 
   }
 
-  function isdue (){
+  function isdue (ag){
     const current_date = new Date("2025-08-07");
-    const dueAssignments = ag.assignments.filter(a => new Date(a.due_at) <= current_date);
-    
-    submissions.forEach(due => {
-    const assignment = dueAssignments.find(a => a.id === due.assignment_id);
-    if (assignment=== undefined) {
-      return; 
-    }
-    });
+    return ag.assignments.filter(asgn => new Date(asgn.due_at) <= current_date);
   }
 
-  function LateDeduction(){
-     let score = submission.submission.score;
-    if (new Date(sub.submission.submitted_at) > new Date(ag.due_at)) {
-      score -= (ag.points_possible * 0.1);
+  function LateDeduction(assignment,submissions){ 
+    if (new Date(submissions.submission.submitted_at) > new Date(assignment.due_at)) {
+      submissions.submission.score -= (assignment.points_possible * 0.1);
     }
   }
 
-  function average(){
+  function average(assignment,sub){
     let total=0;
     let grade=0
     
-    submissions.forEach(sub => { // checks if the score is a number
-        total += ag.assignment.points_possible
-        grade += sub.submission.score
+    grade += sub.submission.score
+    total += assignment.points_possible
+
+    percentage = (grade/total)*100;
+    return percentage;
+  }
+
+  function object_aggregator(ag,submissions){
+    student={}
+    let assignment = isdue(ag)
+
+    submissions.forEach(sub =>{
+      const studentId = sub.learner_id;
+      if (!assignment) return;
+      LateDeduction(assignment,sub)
+      average(assignment,sub)
+    })
+
+    return Object.values(student).map(stu => {
+    stu.avg = percentage;
+    id: learner.id;
+    avg: Number(avg.toFixed(3));
+    return stu;
     });
 
-    percentage = (grade/total)*100
-    return;
+  } 
+
+  
+  // MAINCODE
+   try {
+    validateData(course, ag, submissions);
+  } catch (err) {
+    console.error(err.message);
+    return; // Stop if invalid
   }
 
-    
-
-
-
-
-
+  object_aggregator(ag,submissions)
   
   
-  
-  }
-
-
-  
-  
-  
-  
-  
-  
-  
-  
-  return result;
 }
 
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
@@ -175,3 +183,4 @@ console.log(result);
 
 
 // buildLearnerObject()
+
